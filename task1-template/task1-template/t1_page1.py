@@ -2,29 +2,29 @@
 import streamlit as st
 import random
 
-st.header("Hello, world!")
+st.header("The ultimate Guessing Game: \n")
+st.title("HANG MAN")
+
+WORDS = ("python", "ice", "chocolate")
 
 # create a new random number if we don't have one yet
-if "number" not in st.session_state:
-    st.session_state["number"] = random.randint(1,100)   #for each user-session, it doesn't reload the whole time
-    st.info("New number generated!")
+if "word" not in st.session_state:
+    st.session_state["word"] = random.choice(WORDS)  #for each user-session, it doesn't reload the whole time#
+    lenght_word = len(st.session_state["word"])
+    st.info("New word generated! \n The word has following amount of letters:")
+    st.info(lenght_word)
+    
 
-with st.form("number_form"):
-    guess = st.number_input(
-        "Enter a number",
-        min_value=0,
-        max_value=100,
-        value=10,
-        step=1,
-    )
+with st.form("word_form"):
+    guess = st.text_input("Guess the word!")
     submitted = st.form_submit_button("Submit")
 
 if submitted:
     st.write(f"You submitted: {guess}")
     # Run your calculation or other action here.
-    if guess == st.session_state['number']:
+    if guess == st.session_state['word']:
         st.success("Yeah! You did it")
-        del st.session_state['number']
+        del st.session_state['word']
     else:
-        st.error("Oh no. The number is wrong.")
-        st.info(f"Debug info: The number is {st.session_state['number']}")
+        st.error("Oh no. The word is wrong.")
+        st.info(f"Debug info: The word is {st.session_state['word']}")
