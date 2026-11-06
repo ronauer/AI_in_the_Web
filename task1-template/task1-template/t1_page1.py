@@ -76,7 +76,7 @@ if submitted:
         # Run your calculation or other action here.
         if guess == st.session_state['word'] or guess == "42":
             st.success("Yeah! You did it")
-            del st.session_state["word"] 
+            del st.session_state["word"]
             del st.session_state["is_clicked"] 
             del st.session_state["amount_of_guessing"]
 
@@ -84,13 +84,16 @@ if submitted:
             st.error("Oh no. The word is wrong.")
             st.session_state["amount_of_guessing"] += 1 
             word_list = list(st.session_state['word'])
-            if st.session_state['amount_of_guessing']//3 < len(word_list) and st.session_state['amount_of_guessing']%3==0:
+            if st.session_state['amount_of_guessing']%3==0:
+                first_letters = ""
+                for letter in range (0,st.session_state['letter_index']+1,1):
+                    first_letters = first_letters + word_list[letter]
                 st.write(
                     f"The {st.session_state['letter_index'] + 1}. letter is: "
-                    f"{word_list[st.session_state['letter_index']]}"
-                        )
+                    f"{word_list[st.session_state['letter_index']]} \n"
+                    f"here is the whole word {first_letters}")
                 st.session_state["letter_index"] += 1 
-            elif st.session_state['amount_of_guessing']//3 -5 >= len(word_list):
+            elif st.session_state['amount_of_guessing']//3 +2  >= len(word_list):
                 st.info(f"Debug info: The word is {st.session_state['word']}")
 
     except ValueError, NameError, TypeError: 
