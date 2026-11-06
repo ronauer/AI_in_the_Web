@@ -1,5 +1,6 @@
 import streamlit as st
 
+# generates all the pages and runs the navigation bar
 page1 = st.Page("t1_page1.py", title="Game", icon="🤔")
 page2 = st.Page("t1_page2.py", title="Stats", icon="⚙️")
 

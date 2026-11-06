@@ -1,4 +1,3 @@
-
 import streamlit as st
 import random
 
@@ -12,7 +11,7 @@ WORDS_Hard = ("xylophone", "quasar", "wizard")
 
 WORDS_all = [list(WORDS_Easy), list(WORDS_Middle), list(WORDS_Hard)]
 
-#states erstellen für später
+# creates states for later
 if "amount_of_guessing" not in st.session_state:
     st.session_state["amount_of_guessing"] = 0
 
@@ -25,7 +24,7 @@ if "is_clicked" not in st.session_state:
 if "word" not in st.session_state:  
     st.session_state["word"] = None
 
-#different buttons
+# different buttons to choose your level
 
 if st.button("Level EASY") == True:
     st.session_state["button_value"] = 0
@@ -37,6 +36,7 @@ elif st.button("Level HARD") == True:
     st.session_state["button_value"] = 2
     st.session_state["is_clicked"] = True
 
+# hides buttons after one level is chosen
 def hide_buttons():
         st.markdown(
             """
@@ -49,9 +49,10 @@ def hide_buttons():
             unsafe_allow_html=True,
         )
 
+lenght_word = None
 
-
-if st.session_state["is_clicked"] == True:
+#chooses a random word from the level, saves word in session state, 
+if st.session_state["is_clicked"] == True: # gets activated if one of the level buttons is clicked
     st.session_state["word"] = random.choice(WORDS_all[st.session_state["button_value"]])  #for each user-session, it doesn't reload the whole time#
     lenght_word = len(st.session_state["word"])
     st.session_state["is_clicked"] = False
@@ -65,9 +66,10 @@ if st.session_state["word"] is not None:
     lenght_word = len(st.session_state["word"])
     st.info(f"The word has {lenght_word} letters.")
     hide_buttons()
-    
+
 with st.form("word_form"):
-    guess = st.text_input("Guess the word!")
+    
+    guess = st.text_input("Guess the word!", max_chars = lenght_word)
     submitted = st.form_submit_button("Submit")
 
 if submitted:
@@ -96,5 +98,5 @@ if submitted:
             elif st.session_state['amount_of_guessing']//3 +2  >= len(word_list):
                 st.info(f"Debug info: The word is {st.session_state['word']}")
 
-    except ValueError, NameError, TypeError: 
+    except ValueError, NameError, TypeError:  #catches errors if an user submits a number or a special character
         st.info("You have to select your level first!")
