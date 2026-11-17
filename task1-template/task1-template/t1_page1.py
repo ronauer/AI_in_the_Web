@@ -120,7 +120,7 @@ if submitted:
             elif st.session_state['amount_of_guessing']//3  >= len(word):  # before whole word is printed, stop and lose
                 st.info(f"Debug info: The word is {st.session_state['word']}")
 
-    except ValueError, NameError, TypeError:  # catches errors if an user submits a number or a special character
+    except (ValueError, NameError, TypeError):  # catches errors if an user submits a number or a special character
         st.info("You have to select your level first!")
 
 st.title("chatbot test")
