@@ -2,6 +2,7 @@ from openai import OpenAI
 import streamlit as st
 import numpy as py
 import random
+import os
 
 
 st.header("The ultimate Guessing Game: \n")
@@ -126,7 +127,10 @@ if submitted:
 st.title("chatbot test")
 
 # setting openAI API key from /secrets.toml file
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+client = OpenAI(
+    base_url="https://litellm.uni-osnabrueck.de/v1",
+    api_key=st.secrets["LLM_API_KEY"],
+)
 
 # setting a default llm
 if "openai_model" not in st.session_state:
@@ -153,9 +157,10 @@ if prompt := st.chat_input("What is your question?"):
     # fetching response from openAI
     with st.chat_message("assistant"):
         stream = client.chat.completions.create(
-            model=st.session_state["openai_model"],
-            messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
-            stream=True,
+        model="Ornith-1.5-35B-A3B",
+        max_tokens=1000,
+        messages=[{"role": "user", "content": "Hello!"}],
+        stream=True,
         )
         response = st.write_stream(stream)
 
