@@ -76,6 +76,7 @@ lenght_word = None
 if st.session_state["is_clicked"] == True: # gets activated if one of the level buttons is clicked
     st.session_state["word"] = random.choice(WORDS_all[st.session_state["button_value"]])  # for each user-session, it doesn't reload the whole time#
     st.info("New word generated!")
+    st.session_state["is_clicked"] = False  # buttons come back 
     
 
 if st.session_state["word"] is not None:
