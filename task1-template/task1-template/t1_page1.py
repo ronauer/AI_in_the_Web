@@ -66,7 +66,7 @@ def hide_buttons():
             }
             </style>
             """,  # nochmal angucken # Select all buttons with the secondary button test ID   /* Hide the selected buttons from the user interface */
-            unsafe_allow_html=True,  # Allow Streamlit to render HTML and CSS instead of displaying them as plain text
+            unsafe_allow_html = True,  # Allow Streamlit to render HTML and CSS instead of displaying them as plain text
         )
 
 
@@ -101,8 +101,8 @@ if submitted:
             st.session_state["number_list"].append(st.session_state["number_of_games"])  # for statistics
             st.info(f"Your number of guesses {st.session_state["guessing_stats"]}")
             st.session_state["is_played"] = True # statistics can now be seen
-            del st.session_state["word"]   # word is needed to be deleted for a new one to be chosen
-            st.session_state["is_clicked"] = False   # buttons come back
+            del st.session_state["word"] # word is needed to be deleted for a new one to be chosen
+            st.session_state["is_clicked"] = False # buttons come back
             st.session_state["amount_of_guessing"] = 0  # back to 0 for statistics
             del st.session_state["letter_index"]  # delete, for a new word
             st.rerun() #stars again after a win, so that the user can choose a new level
