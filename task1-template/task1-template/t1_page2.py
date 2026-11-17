@@ -11,23 +11,31 @@ import seaborn as sn
 #st.bar_chart(hist_values)
 
 st.header("Statistics")
-
+# fetching game statistics
 if st.session_state["is_played"] == True:
     stats_df = pd.DataFrame({
-        "Game": st.session_state["number_list"] ,
         "Number of Guesses": st.session_state["guessing_list"]
-        })
+        }, index = st.session_state["number_list"])
 
-
+    # initializing chart
     st.bar_chart(
-        stats_df,
-        x="Game",
-        y="Number of Guesses", 
-        x_label="Number of Games",
+        stats_df, 
+        x_label="Game number",
         y_label="Number of Guesses"
     )
-    st.subheader("average guess:")
-    st.write(stats_df.agg("mean"))
+
+    st.subheader("Summary")
+    # calculating statistics summary
+    total_games = len(stats_df)
+    avg_guesses = stats_df["Number of Guesses"].mean()
+
+    summary_df = pd.DataFrame({
+        "Total Games": [total_games],
+        "Average Guesses": [avg_guesses]
+    })
+    # initializing chart without unnecesarry column
+    st.dataframe(summary_df, hide_index=True)
+
 else:
     st.write("You have to play games to see the statistics!")
 
