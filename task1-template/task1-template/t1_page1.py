@@ -44,6 +44,10 @@ if "is_clicked" not in st.session_state:
 if "word" not in st.session_state:  
     st.session_state["word"] = None
 
+#info
+if "my_message" not in st.session_state:
+   st.session_state["my_message"] = "There is no hint available yet. You have to guess first!"
+
 
 # different buttons to choose your level
 if st.button("Level EASY") == True:
@@ -55,6 +59,7 @@ elif st.button("Level MIDDLE") == True:
 elif st.button("Level HARD") == True:
     st.session_state["button_value"] = 2
     st.session_state["is_clicked"] = True
+
 
 # hides buttons after one level is chosen
 def hide_buttons():
@@ -89,6 +94,9 @@ with st.form("word_form"):
     guess = st.text_input("Guess the word!", max_chars = lenght_word)   # creates limited input
     submitted = st.form_submit_button("Submit")  
 
+
+st.info(st.session_state["my_message"])  # prints hint if available
+
 if submitted:
     try:
         st.write(f"You submitted: {guess}")
@@ -105,6 +113,7 @@ if submitted:
             st.session_state["is_clicked"] = False # buttons come back
             st.session_state["amount_of_guessing"] = 0  # back to 0 for statistics
             del st.session_state["letter_index"]  # delete, for a new word
+            del st.session_state["my_message"]  # delete, for a new word
             st.rerun() #stars again after a win, so that the user can choose a new level
 
         else:
@@ -115,10 +124,9 @@ if submitted:
                 first_letters = ""
                 for letter in range (0,st.session_state['letter_index']+1,1):
                     first_letters = first_letters + word[letter]
-                st.write(
-                    f"The {st.session_state['letter_index'] + 1}. letter is: "
-                    f"{word[st.session_state['letter_index']]} \n"
-                    f"Here is the whole word {first_letters}")   # print first letter
+                st.session_state["my_message"]  =  (f"The {st.session_state['letter_index'] + 1}. letter is: "
+                                    f"{word[st.session_state['letter_index']]} \n"
+                                    f"Here is the whole word {first_letters}")
                 st.session_state["letter_index"] += 1 
             elif st.session_state['amount_of_guessing']//3  >= len(word):  # before whole word is printed, stop and lose
                 st.info(f"Debug info: The word is {st.session_state['word']}")
