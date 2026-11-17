@@ -105,6 +105,7 @@ if submitted:
             st.session_state["is_clicked"] = False   # buttons come back
             st.session_state["amount_of_guessing"] = 0  # back to 0 for statistics
             del st.session_state["letter_index"]  # delete, for a new word
+            st.rerun() #stars again after a win, so that the user can choose a new level
 
         else:
             st.error("Oh no. The word is wrong.")  
