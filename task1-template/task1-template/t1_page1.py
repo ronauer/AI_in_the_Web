@@ -4,6 +4,11 @@ import numpy as py
 import random
 import os
 
+# setting openAI API key from /secrets.toml file
+client = OpenAI(
+    base_url="https://litellm.uni-osnabrueck.de/v1",
+    api_key=st.secrets["LLM_API_KEY"],
+)
 
 st.header("The ultimate Guessing Game: \n")
 st.title("HANG MAN")
@@ -72,12 +77,34 @@ def hide_buttons():
 
 lenght_word = None
 
+# initialising test chat's history without overwriting
+if "guesshistory" not in st.session_state:
+    st.session_state.guesshistory = []
+
 # chooses a random word from the level, saves word in session state, 
 if st.session_state["is_clicked"] == True: # gets activated if one of the level buttons is clicked
     st.session_state["word"] = random.choice(WORDS_all[st.session_state["button_value"]])  # for each user-session, it doesn't reload the whole time#
     st.info("New word generated!")
-    st.session_state["is_clicked"] = False  # buttons come back 
-    
+    st.session_state["is_clicked"] = False # buttons come back 
+    st.session_state.wordhistory.append({"role": "system", "content": st.session_state["word"]})
+
+
+if prompt := "What is your question?": #not done!
+    # adding prompt to chat history
+    st.session_state.wordhistory.append({"role": "user", "content": prompt})
+
+    # fetching response from openAI
+    with st.chat_message("assistant"):
+        stream = client.chat.completions.create(
+        model="Ornith-1.5-35B-A3B",
+        max_tokens=1000,
+        messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.wordhistory],
+        stream=True,
+        )
+        response = st.write_stream(stream)
+
+    # adding response to chat history
+    st.session_state.messages.append({"role": "assistant", "content": response})
 
 if st.session_state["word"] is not None:
     lenght_word = len(st.session_state["word"])
@@ -128,12 +155,6 @@ if submitted:
 
 st.title("chatbot test")
 
-# setting openAI API key from /secrets.toml file
-client = OpenAI(
-    base_url="https://litellm.uni-osnabrueck.de/v1",
-    api_key=st.secrets["LLM_API_KEY"],
-)
-
 # setting a default llm
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-4o-mini"
@@ -161,7 +182,7 @@ if prompt := st.chat_input("What is your question?"):
         stream = client.chat.completions.create(
         model="Ornith-1.5-35B-A3B",
         max_tokens=1000,
-        messages=[{"role": "user", "content": "Hello!"}],
+        messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
         stream=True,
         )
         response = st.write_stream(stream)
