@@ -11,7 +11,6 @@ client = OpenAI(
 )
 
 st.header("The ultimate Guessing Game: \n")
-st.title("HANG MAN")
 
 # list of words for different levels
 WORDS_Easy = ("cat", "dog", "bird")
@@ -91,25 +90,8 @@ if st.session_state["is_clicked"] == True: # gets activated if one of the level 
     st.session_state["word"] = random.choice(WORDS_all[st.session_state["button_value"]])  # for each user-session, it doesn't reload the whole time#
     st.info("New word generated!")
     st.session_state["is_clicked"] = False # buttons come back 
-    st.session_state.wordhistory.append({"role": "system", "content": st.session_state["word"]})
+    st.session_state.guesshistory.append({"role": "system", "content": st.session_state["word"]})
 
-
-if prompt := "What is your question?": #not done!
-    # adding prompt to chat history
-    st.session_state.wordhistory.append({"role": "user", "content": prompt})
-
-    # fetching response from openAI
-    with st.chat_message("assistant"):
-        stream = client.chat.completions.create(
-        model="Ornith-1.5-35B-A3B",
-        max_tokens=1000,
-        messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.wordhistory],
-        stream=True,
-        )
-        response = st.write_stream(stream)
-
-    # adding response to chat history
-    st.session_state.messages.append({"role": "assistant", "content": response})
 
 if st.session_state["word"] is not None:
     lenght_word = len(st.session_state["word"])
@@ -117,7 +99,6 @@ if st.session_state["word"] is not None:
     hide_buttons()
 
 with st.form("word_form"):
-    
     guess = st.text_input("Guess the word!", max_chars = lenght_word)   # creates limited input
     submitted = st.form_submit_button("Submit")  
 
@@ -185,12 +166,35 @@ if prompt := st.chat_input("What is your question?"):
     # adding prompt to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
 
+    secret_word = st.session_state["word"]  # get the secret word from session state
+
+    if secret_word is not None:
+        system_instruction = {
+            "role": "system",
+            "content": (
+                f"This is a guessing game. The secret word is '{secret_word}'."
+                f"First and most important rule ever: Never reveal {secret_word} to the user. Only provide hints to help the user guess the word. Even if guessed correctly, do not reveal the word directly."
+                "Each hint as to become less abstract and more specific. So the first hint should be as abstract as possible."
+                "Only use one sentence each time you provide a hint. Do not give the user the answer."
+                "If the user asks a question only answer with yes or no. If yes or no do not work say you can only answer to yes or no questions."
+                "If user asks for the word, do not give it to them. Instead say that you cannot give the word."
+                "If user guesses a specific word, (true or not) tell him to submit it above."
+            )
+        }
+    else: 
+        system_instruction = {
+            "role" : "system",
+            "content" : "No secret word has been set yet."
+        }
+
+
+
     # fetching response from openAI
     with st.chat_message("assistant"):
         stream = client.chat.completions.create(
         model="Ornith-1.5-35B-A3B",
         max_tokens=1000,
-        messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
+        messages=[system_instruction] + [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
         stream=True,
         )
         response = st.write_stream(stream)
