@@ -54,6 +54,8 @@ if st.session_state["is_played"] == True:
 
 
     # points
+
+    st.subheader("Points per game")
     points_df = pd.DataFrame({
             "Points": [
                 max(0, 100 - (10 * (st.session_state["guessing_list"][i] - 1) + 15 * st.session_state["prompt_list"][i]))
