@@ -13,9 +13,9 @@ client = OpenAI(
 st.header("The ultimate Guessing Game: \n")
 
 # list of words for different levels
-WORDS_Easy = ("cat", "dog", "bird", "fish", "tree", "book", "star", "moon", "cake", "frog")
-WORDS_Middle = ("elephant", "giraffe", "kangaroo", "penguin", "dolphin", "volcano", "bicycle", "pyramid", "astronaut", "pineapple")
-WORDS_Hard = ("xylophone", "wizard", "labyrinth", "phoenix", "alchemist", "chameleon", "sphinx", "eclipse", "orangutan")
+WORDS_Easy = ("cat", "dog", "chair", "fish", "tree", "book", "star", "moon", "cake", "house")
+WORDS_Middle = ("elephant", "telescope", "waterfall", "lighthouse", "dolphin", "volcano", "bicycle", "pyramid", "astronaut")
+WORDS_Hard = ("xylophone", "wizard", "labyrinth", "phoenix", "alchemist", "chameleon", "sphinx", "eclipse", "algorithm")
 #word list of word lists
 WORDS_all = [list(WORDS_Easy), list(WORDS_Middle), list(WORDS_Hard)]
 
