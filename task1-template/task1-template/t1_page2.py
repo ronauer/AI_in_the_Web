@@ -39,13 +39,13 @@ if st.session_state["is_played"] == True:
 
     # Amount of hints used per game
     st.subheader("Amount of hints used per game")
-    stats_df = pd.DataFrame({
+    hints_df = pd.DataFrame({
         "Number of Hints": st.session_state["prompt_list"]
         }, index = st.session_state["number_list"])
 
     # initializing chart
     st.bar_chart(
-        stats_df, 
+        hints_df, 
         x_label="Game number",
         y_label="Number of Hints"
     )
