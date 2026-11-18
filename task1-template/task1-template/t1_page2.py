@@ -36,6 +36,20 @@ if st.session_state["is_played"] == True:
     # initializing chart without unnecesarry column
     st.dataframe(summary_df, hide_index=True)
 
+
+    # Amount of hints used per game
+    st.subheader("Amount of hints used per game")
+    stats_df = pd.DataFrame({
+        "Number of Hints": st.session_state["prompt_list"]
+        }, index = st.session_state["number_list"])
+
+    # initializing chart
+    st.bar_chart(
+        stats_df, 
+        x_label="Game number",
+        y_label="Number of Hints"
+    )
+
 else:
     st.write("You have to play games to see the statistics!")
 

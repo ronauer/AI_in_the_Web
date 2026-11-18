@@ -12,6 +12,7 @@ client = OpenAI(
 
 st.header("The ultimate Guessing Game: \n")
 
+
 # list of words for different levels
 WORDS_Easy = ("cat", "dog", "chair", "fish", "tree", "book", "star", "moon", "cake", "house")
 WORDS_Middle = ("elephant", "telescope", "waterfall", "lighthouse", "dolphin", "volcano", "bicycle", "pyramid", "astronaut")
@@ -20,6 +21,7 @@ WORDS_Hard = ("xylophone", "wizard", "labyrinth", "phoenix", "alchemist", "chame
 WORDS_all = [list(WORDS_Easy), list(WORDS_Middle), list(WORDS_Hard)]
 
 # creates states for later
+
 # statistics states
 if "number_of_games" not in st.session_state:
     st.session_state["number_of_games"] = 0 
@@ -32,6 +34,12 @@ if "guessing_stats" not in st.session_state:
 
 if "guessing_list" not in st.session_state:
     st.session_state["guessing_list"] = []  # list needed for statistics
+
+if "prompt_count" not in st.session_state:
+    st.session_state["prompt_count"] = 0  # count of prompts for statistics, each prompt is counted as hint
+
+if "prompt_list" not in st.session_state:
+    st.session_state["prompt_list"] = []  # list needed for statistics
 
 
 
@@ -81,16 +89,12 @@ def hide_buttons():
 
 lenght_word = None
 
-# initialising test chat's history without overwriting
-if "guesshistory" not in st.session_state:
-    st.session_state.guesshistory = []
 
 # chooses a random word from the level, saves word in session state, 
 if st.session_state["is_clicked"] == True: # gets activated if one of the level buttons is clicked
     st.session_state["word"] = random.choice(WORDS_all[st.session_state["button_value"]])  # for each user-session, it doesn't reload the whole time#
     st.info("New word generated!")
     st.session_state["is_clicked"] = False # buttons come back 
-    st.session_state.guesshistory.append({"role": "system", "content": st.session_state["word"]})
     st.session_state.messages = []
 
 
@@ -120,9 +124,13 @@ if submitted:
             st.session_state["is_played"] = True # statistics can now be seen
             del st.session_state["word"] # word is needed to be deleted for a new one to be chosen
             st.session_state["is_clicked"] = False # buttons come back
-            st.session_state["amount_of_guessing"] = 0  # back to 0 for statistics
+            st.session_state["amount_of_guessing"] = 1  # back to 1 for statistics
             del st.session_state["letter_index"]  # delete, for a new word
             del st.session_state["my_message"]  # delete, for a new word
+
+            st.session_state["prompt_list"].append(st.session_state["prompt_count"]) 
+            st.session_state["prompt_count"] = 0 # back to 0 for statistics
+            
             st.rerun() #stars again after a win, so that the user can choose a new level
 
         else:
@@ -166,6 +174,8 @@ if prompt := st.chat_input("What is your question?"):
         st.markdown(prompt)
     # adding prompt to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
+
+    st.session_state["prompt_count"] += 1 # counts the number of prompts for statistics
 
     secret_word = st.session_state["word"]  # gets the word to guess from the session state
 
