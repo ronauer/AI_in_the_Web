@@ -2,6 +2,7 @@ from openai import OpenAI
 import streamlit as st
 import numpy as py
 import random
+import time
 import os
 
 # setting openAI API key from /secrets.toml file
@@ -116,6 +117,8 @@ if submitted:
         # Run your calculation or other action here.
         if guess == st.session_state['word'] or guess == "42":  # win if word or 42
             st.success("Yeah! You did it")
+            st.balloons()
+            time.sleep(1.7)  # wait for 2 restarting
             st.session_state["guessing_stats"] = st.session_state["amount_of_guessing"]  
             st.session_state["guessing_list"].append(st.session_state["guessing_stats"])  # obere beiden zeihlen zusammenfassen??
             st.session_state["number_of_games"] += 1
@@ -151,7 +154,8 @@ if submitted:
     except (ValueError, NameError, TypeError):  # catches errors if an user submits a number or a special character
         st.info("You have to select your level first!")
 
-st.title("chatbot test")
+st.subheader("Ask AI for hints!")
+st.caption("You can simply ask AI for hints or yes/no questions. Each question will reduce 15 points.")
 
 # setting a default llm
 if "openai_model" not in st.session_state:
@@ -185,7 +189,7 @@ if prompt := st.chat_input("What is your question?"):
             "content": (
                 f"This is a guessing game. The secret word is '{secret_word}'."
                 f"First and most important rule ever: Never reveal {secret_word} to the user. Only provide hints to help the user guess the word. Even if guessed correctly, do not reveal the word directly."
-                "Each hint as to become less abstract and more specific. So the first hint should be as abstract as possible."
+                "Each hint as to become less abstract and more specific. So the first hint should be as abstract as possible (even though the user specific ask for a specific hint)."
                 "Only use one sentence each time you provide a hint. Do not give the user the answer."
                 "If the user asks a question only answer with yes or no. If yes or no do not work say you can only answer to yes or no questions."
                 "If user asks for the word, do not give it to them. Instead say that you cannot give the word."
