@@ -13,9 +13,9 @@ client = OpenAI(
 st.header("The ultimate Guessing Game: \n")
 
 # list of words for different levels
-WORDS_Easy = ("cat", "dog", "bird")
-WORDS_Middle = ("elephant", "giraffe", "kangaroo")
-WORDS_Hard = ("xylophone", "quasar", "wizard")
+WORDS_Easy = ("cat", "dog", "bird", "fish", "tree", "book", "star", "moon", "cake", "frog")
+WORDS_Middle = ("elephant", "giraffe", "kangaroo", "penguin", "dolphin", "volcano", "bicycle", "pyramid", "astronaut", "pineapple")
+WORDS_Hard = ("xylophone", "wizard", "labyrinth", "phoenix", "alchemist", "chameleon", "sphinx", "eclipse", "orangutan")
 #word list of word lists
 WORDS_all = [list(WORDS_Easy), list(WORDS_Middle), list(WORDS_Hard)]
 
@@ -167,7 +167,7 @@ if prompt := st.chat_input("What is your question?"):
     # adding prompt to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    secret_word = st.session_state["word"]  # get the secret word from session state
+    secret_word = st.session_state["word"]  # gets the word to guess from the session state
 
     if secret_word is not None:
         system_instruction = {
@@ -181,7 +181,7 @@ if prompt := st.chat_input("What is your question?"):
                 "If user asks for the word, do not give it to them. Instead say that you cannot give the word."
                 "If user guesses a specific word, (true or not) tell him to submit it above."
             )
-        }
+        } # instructions how the bot should behave when giving hints
     else: 
         system_instruction = {
             "role" : "system",
