@@ -5,6 +5,9 @@ import random
 import time
 import os
 
+def normalize_text(text):
+    return text.strip().lower() # removes whitespace and converts to lowercase
+
 # setting openAI API key from /secrets.toml file
 client = OpenAI(
     base_url="https://litellm.uni-osnabrueck.de/v1",
@@ -112,10 +115,16 @@ with st.form("word_form"):
 st.info(st.session_state["my_message"])  # prints hint if available
 
 if submitted:
-    try:
-        st.write(f"You submitted: {guess}")
+    if st.session_state["word"] is None:
+        st.info("You have to select your level first!")
+    else:
+        clean_guess = normalize_text(guess)  # normalizes the input
+
+        if not clean_guess.isalpha() and clean_guess != "42":
+            st.warning("Invalid input!")
+        st.write(f"You submitted: {clean_guess}")
         # Run your calculation or other action here.
-        if guess == st.session_state['word'] or guess == "42":  # win if word or 42
+        if clean_guess == st.session_state['word'] or clean_guess == "42":  # win if word or 42
             st.success("Yeah! You did it")
             st.balloons()
             time.sleep(1.7)  # wait for 2 restarting
@@ -151,8 +160,8 @@ if submitted:
             elif st.session_state['amount_of_guessing']//3  >= len(word):  # before whole word is printed, stop and lose
                 st.info(f"Debug info: The word is {st.session_state['word']}")
 
-    except (ValueError, NameError, TypeError):  # catches errors if an user submits a number or a special character
-        st.info("You have to select your level first!")
+#    except (ValueError, NameError, TypeError):  # catches errors if an user submits a number or a special character
+#        st.info("You have to select your level first!")
 
 st.subheader("Ask AI for hints!")
 st.caption("You can simply ask AI for hints or yes/no questions. Each question will reduce 15 points.")
