@@ -91,6 +91,7 @@ if st.session_state["is_clicked"] == True: # gets activated if one of the level 
     st.info("New word generated!")
     st.session_state["is_clicked"] = False # buttons come back 
     st.session_state.guesshistory.append({"role": "system", "content": st.session_state["word"]})
+    st.session_state.messages = []
 
 
 if st.session_state["word"] is not None:
