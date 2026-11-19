@@ -79,10 +79,11 @@ if st.session_state["is_played"] == True:
     #Quality of guesses
     
     st.markdown("### Quality of guesses per game")
-    quality_df = pd.DataFrame({
-        "Quality": [quality for quality in st.session_state["guess_qualities"]]
-        }, index = [guesses - 1 for guesses in st.session_state["guessing_list"]])
-    
+    st.markdown("The quality of guesses is calculated by comparing the similarity between the guessed word and the correct word. A higher percentage indicates a closer match.")
+
+    quality_df = pd.DataFrame(
+        {"Quality": st.session_state["guess_qualities"]},
+    index= range (1, len(st.session_state["guess_qualities"]) + 1))
     # initializing chart
     st.bar_chart(
         quality_df, 

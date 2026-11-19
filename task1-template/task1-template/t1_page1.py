@@ -16,7 +16,6 @@ def reset_game():
     st.session_state["letter_index"] = 0
     st.session_state["my_message"] = "There is no hint available yet. You have to guess first!"
     st.session_state["prompt_count"] = 0
-    st.session_state["guess_qualities"] = []
     st.session_state.messages = []
 
 def save_stats(gave_up=False):
@@ -171,9 +170,9 @@ if submitted:
                 feedback_box.error("Oh no. The word is wrong.")  
                 st.session_state["amount_of_guessing"] += 1   # amount of guesses increases
 
-                qualitiy = SequenceMatcher(None, clean_guess, st.session_state['word']).ratio()  # calculates the similarity between the guess and the word
-                st.info(f"Your guess is {qualitiy*100:.2f}% similar to the word.")  # prints the similarity in percent
-                st.session_state["guess_qualities"].append(qualitiy)  # saves the similarity in a list for statistics
+                quality = SequenceMatcher(None, clean_guess, st.session_state['word']).ratio()  # calculates the similarity between the guess and the word
+                st.info(f"Your guess is {quality*100:.2f}% similar to the word.")  # prints the similarity in percent
+                st.session_state["guess_qualities"].append(quality)  # saves the similarity in a list for statistics
                 word = st.session_state['word']  # safe word which is needed to guess
 
                 if st.session_state['amount_of_guessing']%3==0 and st.session_state['amount_of_guessing']//3 < len(word):   # after 3 guesses: hint
