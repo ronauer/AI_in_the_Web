@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 st.header("Statistics")
 # fetching game statistics
 if st.session_state["is_played"] == True:
+
+    st.markdown("### Number of guesses per game")
     stats_df = pd.DataFrame({
         "Number of Guesses": [guesses - 1 for guesses in st.session_state["guessing_list"]] # number of guesses bezieht nicht den richtigen guess ein
         }, index=st.session_state["number_list"])
@@ -24,7 +26,7 @@ if st.session_state["is_played"] == True:
         y_label="Number of Guesses"
     )
 
-    st.subheader("Summary")
+    st.markdown("#### Summary for number of guesses")
     # calculating statistics summary
     total_games = len(stats_df)
     avg_guesses = stats_df["Number of Guesses"].mean()
@@ -38,7 +40,7 @@ if st.session_state["is_played"] == True:
 
 
     
-    st.subheader("Amount of hints used per game")
+    st.markdown("### Number of hints per game")
 
     hints_df = pd.DataFrame({
             "Number of Hints": st.session_state["prompt_list"]
@@ -55,7 +57,8 @@ if st.session_state["is_played"] == True:
 
     # points
 
-    st.subheader("Points per game")
+    st.markdown("### Points per game")
+    st.markdown("The maximum amount of points is 200. Each guess costs 10 points and each hint costs 15 points.")
     points_df = pd.DataFrame({
             "Points": [
                 max(0, 200 - (10 * (st.session_state["guessing_list"][i] - 1) + 15 * st.session_state["prompt_list"][i]))
