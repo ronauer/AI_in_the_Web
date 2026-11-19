@@ -63,33 +63,19 @@ if st.session_state["is_played"] == True:
 
 
     # points
-<<<<<<< Updated upstream
     st.markdown("### Points per game")
     st.markdown("The maximum amount of points is 200. Each guess costs 10 points and each hint costs 15 points.")
-=======
-
-'''
-    st.subheader("Points per game")
->>>>>>> Stashed changes
     points_df = pd.DataFrame({
             "Points": [
                 max(0, 200 - (10 * (st.session_state["guessing_list"][i] - 1) + 15 * st.session_state["prompt_list"][i]))
                 for i in range(st.session_state["number_of_games"])
                 ]
             }, index = st.session_state["number_list"])
-<<<<<<< Updated upstream
     sum_points = points_df["Points"].sum() 
     st.markdown(f"Total points: {sum_points}")
 
     
     
-=======
-    '''
-    st.subheader("Points per game")
-    points_df = pd.DataFrame({
-            "Points": 500 - (10 * (st.session_state["guessing_list"][i] - 1) + 15 * st.session_state["prompt_list"][i])
-            }, index = st.session_state["number_list"])
->>>>>>> Stashed changes
     
     # initializing chart
     st.bar_chart(
@@ -113,8 +99,7 @@ if st.session_state["is_played"] == True:
         quality_df, 
         x_label="Number of submitted Guess",
         y_label="Quality of the Guess"
-    )
-    
+    )   
 else:
     st.write("You have to play games to see the statistics!")
 
