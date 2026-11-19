@@ -157,7 +157,8 @@ if submitted:
             if clean_guess == st.session_state['word'] or clean_guess == "42":  # win if word or 42
                 st.success("Yeah! You did it")
                 st.balloons()
-                time.sleep(1.7)  # wait for 2 restarting
+                time.sleep(1.4)  # wait for 1.4 seconds before restarting
+                st.session_state["guess_qualities"].append(1.0) # perfect guess, so similarity is 100%
 
                 st.session_state["guessing_stats"] = st.session_state["amount_of_guessing"]  
                 st.info(f"Your number of guesses {st.session_state["guessing_stats"]}")
