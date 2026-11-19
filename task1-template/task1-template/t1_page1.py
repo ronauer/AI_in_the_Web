@@ -122,6 +122,7 @@ if st.session_state["is_clicked"] == True: # gets activated if one of the level 
     st.info("New word generated!")
     st.session_state["is_clicked"] = False # buttons come back 
     st.session_state.messages = []
+    st.session_state["guess_qualities"] = []  # resets the list of guess qualities for each new game
 
 
 if st.session_state["word"] is not None:
