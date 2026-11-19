@@ -4,6 +4,7 @@ import streamlit as st
 import random
 import time
 # import os
+from difflib import SequenceMatcher
 
 def normalize_text(text):
     return text.strip().lower() # removes whitespace and converts to lowercase
@@ -15,6 +16,7 @@ def reset_game():
     st.session_state["letter_index"] = 0
     st.session_state["my_message"] = "There is no hint available yet. You have to guess first!"
     st.session_state["prompt_count"] = 0
+    st.session_state["guess_qualities"] = []
     st.session_state.messages = []
 
 def save_stats(gave_up=False):
@@ -64,6 +66,9 @@ if "prompt_list" not in st.session_state:
 
 if "gave_up_list" not in st.session_state:
     st.session_state["gave_up_list"] = [] # 
+
+if "guess_qualities" not in st.session_state:
+    st.session_state["guess_qualities"] = []  
 
 # game states
 if "amount_of_guessing" not in st.session_state:
@@ -165,6 +170,10 @@ if submitted:
             else:
                 feedback_box.error("Oh no. The word is wrong.")  
                 st.session_state["amount_of_guessing"] += 1   # amount of guesses increases
+
+                qualitiy = SequenceMatcher(None, clean_guess, st.session_state['word']).ratio()  # calculates the similarity between the guess and the word
+                st.info(f"Your guess is {qualitiy*100:.2f}% similar to the word.")  # prints the similarity in percent
+                st.session_state["guess_qualities"].append(qualitiy)  # saves the similarity in a list for statistics
                 word = st.session_state['word']  # safe word which is needed to guess
 
                 if st.session_state['amount_of_guessing']%3==0 and st.session_state['amount_of_guessing']//3 < len(word):   # after 3 guesses: hint

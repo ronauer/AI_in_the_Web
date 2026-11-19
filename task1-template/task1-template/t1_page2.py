@@ -76,6 +76,20 @@ if st.session_state["is_played"] == True:
         # height=400
     )
 
+    #Quality of guesses
+    
+    st.markdown("### Quality of guesses per game")
+    quality_df = pd.DataFrame({
+        "Quality": [quality for quality in st.session_state["guess_qualities"]]
+        }, index = [guesses - 1 for guesses in st.session_state["guessing_list"]])
+    
+    # initializing chart
+    st.bar_chart(
+        quality_df, 
+        x_label="Game number",
+        y_label="Quality of Guesses"
+    )
+    
 else:
     st.write("You have to play games to see the statistics!")
 
