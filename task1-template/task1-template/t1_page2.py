@@ -3,6 +3,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+if "is_played" not in st.session_state:
+    st.session_state["is_played"] = False
 
 st.header("Statistics")
 # fetching game statistics
@@ -67,14 +69,13 @@ if st.session_state["is_played"] == True:
     st.markdown("The maximum amount of points is 200. Each guess costs 10 points and each hint costs 15 points.")
     points_df = pd.DataFrame({
             "Points": [
-                max(0, 200 - (10 * (st.session_state["guessing_list"][i] - 1) + 15 * st.session_state["prompt_list"][i]))
+                0 if st.session_state["gave_up_list"] [i] else max(0, 200 - (10 * (st.session_state["guessing_list"][i] - 1) + 15 * st.session_state["prompt_list"][i]))
                 for i in range(st.session_state["number_of_games"])
-                ]
-            }, index = st.session_state["number_list"])
+            ]
+        }, index = st.session_state["number_list"])
     sum_points = points_df["Points"].sum() 
     st.markdown(f"Total points: {sum_points}")
 
-    
     
     
     # initializing chart
