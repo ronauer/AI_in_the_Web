@@ -1,14 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-# import seaborn as sn
 import matplotlib.pyplot as plt
 
-#st.header("Statistics")
-
-
-#hist_values = np.histogram(st.session_state["guessing_stats"],st.session_state["number_of_games"])
-#st.bar_chart(hist_values)
 
 st.header("Statistics")
 # fetching game statistics
@@ -16,7 +10,7 @@ if st.session_state["is_played"] == True:
 
     st.markdown("### Number of guesses per game")
     stats_df = pd.DataFrame({
-        "Number of Guesses": [guesses - 1 for guesses in st.session_state["guessing_list"]] # number of guesses bezieht nicht den richtigen guess ein
+        "Number of Guesses": [guesses - 1 for guesses in st.session_state["guessing_list"]] 
         }, index=st.session_state["number_list"])
 
     # initializing chart
@@ -69,7 +63,6 @@ if st.session_state["is_played"] == True:
 
 
     # points
-
     st.markdown("### Points per game")
     st.markdown("The maximum amount of points is 200. Each guess costs 10 points and each hint costs 15 points.")
     points_df = pd.DataFrame({
@@ -78,6 +71,7 @@ if st.session_state["is_played"] == True:
                 for i in range(st.session_state["number_of_games"])
                 ]
             }, index = st.session_state["number_list"])
+    
     
     
     # initializing chart
@@ -91,7 +85,7 @@ if st.session_state["is_played"] == True:
 
     #Quality of guesses
     
-    st.markdown("### Quality of guesses per game")
+    st.markdown("### Quality of guesses of the last game")
     st.markdown("The quality of guesses is calculated by comparing the similarity between the guessed word and the correct word. A higher percentage indicates a closer match.")
 
     quality_df = pd.DataFrame(
@@ -100,8 +94,8 @@ if st.session_state["is_played"] == True:
     # initializing chart
     st.bar_chart(
         quality_df, 
-        x_label="Game number",
-        y_label="Quality of Guesses"
+        x_label="Number of submitted Guess",
+        y_label="Quality of the Guess"
     )
     
 else:
