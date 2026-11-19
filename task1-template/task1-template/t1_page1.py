@@ -8,6 +8,15 @@ import os
 def normalize_text(text):
     return text.strip().lower() # removes whitespace and converts to lowercase
 
+def reset_game():
+    st.session_state["is_clicked"] = False
+    st.session_state["word"] = None
+    st.session_state["amount_of_guessing"] = 1
+    st.session_state["letter_index"] = 0
+    st.session_state["my_message"] = "There is no hint available yet. You have to guess first!"
+    st.session_state["prompt_count"] = 0
+    st.session_state.messages = []
+
 # setting openAI API key from /secrets.toml file
 client = OpenAI(
     base_url="https://litellm.uni-osnabrueck.de/v1",
@@ -128,20 +137,16 @@ if submitted:
             st.success("Yeah! You did it")
             st.balloons()
             time.sleep(1.7)  # wait for 2 restarting
+
             st.session_state["guessing_stats"] = st.session_state["amount_of_guessing"]  
             st.session_state["guessing_list"].append(st.session_state["guessing_stats"])  # obere beiden zeihlen zusammenfassen??
             st.session_state["number_of_games"] += 1
             st.session_state["number_list"].append(st.session_state["number_of_games"])  # for statistics
             st.info(f"Your number of guesses {st.session_state["guessing_stats"]}")
             st.session_state["is_played"] = True # statistics can now be seen
-            del st.session_state["word"] # word is needed to be deleted for a new one to be chosen
-            st.session_state["is_clicked"] = False # buttons come back
-            st.session_state["amount_of_guessing"] = 1  # back to 1 for statistics
-            del st.session_state["letter_index"]  # delete, for a new word
-            del st.session_state["my_message"]  # delete, for a new word
+            st.session_state["prompt_list"].append(st.session_state["prompt_count"])
 
-            st.session_state["prompt_list"].append(st.session_state["prompt_count"]) 
-            st.session_state["prompt_count"] = 0 # back to 0 for statistics
+            reset_game() 
             
             st.rerun() #stars again after a win, so that the user can choose a new level
 
