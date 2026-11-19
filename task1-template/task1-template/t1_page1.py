@@ -1,16 +1,15 @@
 from openai import OpenAI
 import streamlit as st
-# import numpy as py
 import random
 import time
-# import os
 from difflib import SequenceMatcher
 
 def normalize_text(text):
     return text.strip().lower() # removes whitespace and converts to lowercase
 
+# 
 def reset_game():
-    st.session_state["is_clicked"] = False
+    st.session_state["is_clicked"] = False 
     st.session_state["word"] = None
     st.session_state["amount_of_guessing"] = 1
     st.session_state["letter_index"] = 0
@@ -20,7 +19,7 @@ def reset_game():
 
 def save_stats(gave_up=False):
     st.session_state["guessing_list"].append(st.session_state["amount_of_guessing"])
-    st.session_state["gave_up_list"].append(gave_up)  #gave up is True if user gave up or didn't guess correctly
+    st.session_state["gave_up_list"].append(gave_up)  # gave up is True if user gave up or didn't guess correctly
     st.session_state["number_of_games"] += 1 
     st.session_state["number_list"].append(st.session_state["number_of_games"])
     st.session_state["prompt_list"].append(st.session_state["prompt_count"])
@@ -124,17 +123,16 @@ if st.session_state["is_clicked"] == True: # gets activated if one of the level 
     st.session_state.messages = []
     st.session_state["guess_qualities"] = []  # resets the list of guess qualities for each new game
 
-
 if st.session_state["word"] is not None:
     lenght_word = len(st.session_state["word"])
     st.info(f"The word has {lenght_word} letters.")
     hide_buttons()
     if st.button("Give up!", type="primary"):
         st.error(f"You gave up! The word was: {st.session_state['word']}")
-        time.sleep(2)  # wait for 4 seconds before restarting
+        time.sleep(1.4)  # wait for 1.4 seconds before restarting
 
         save_stats(gave_up=True)
-        reset_game()
+        reset_game() 
         st.rerun()  # restarts the game after giving up
 
 with st.form("word_form"):
