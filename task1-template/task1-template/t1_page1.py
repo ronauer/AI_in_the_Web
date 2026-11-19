@@ -1,9 +1,9 @@
 from openai import OpenAI
 import streamlit as st
-import numpy as py
+# import numpy as py
 import random
 import time
-import os
+# import os
 
 def normalize_text(text):
     return text.strip().lower() # removes whitespace and converts to lowercase
@@ -16,6 +16,14 @@ def reset_game():
     st.session_state["my_message"] = "There is no hint available yet. You have to guess first!"
     st.session_state["prompt_count"] = 0
     st.session_state.messages = []
+
+def save_stats(gave_up=False):
+    st.session_state["guessing_list"].append(st.session_state["amount_of_guessing"])
+    st.session_state["gave_up_list"].append(gave_up)
+    st.session_state["number_of_games"] += 1
+    st.session_state["number_list"].append(st.session_state["number_of_games"])
+    st.session_state["prompt_list"].append(st.session_state["prompt_count"])
+    st.session_state["is_played"] = True
 
 # setting openAI API key from /secrets.toml file
 client = OpenAI(
@@ -54,7 +62,8 @@ if "prompt_count" not in st.session_state:
 if "prompt_list" not in st.session_state:
     st.session_state["prompt_list"] = []  # list needed for statistics
 
-
+if "gave_up_list" not in st.session_state:
+    st.session_state["gave_up_list"] = [] # 
 
 # game states
 if "amount_of_guessing" not in st.session_state:
@@ -115,13 +124,20 @@ if st.session_state["word"] is not None:
     lenght_word = len(st.session_state["word"])
     st.info(f"The word has {lenght_word} letters.")
     hide_buttons()
+    if st.button("Give up!", type="primary"):
+        st.error(f"You gave up! The word was: {st.session_state['word']}")
+        time.sleep(2)  # wait for 4 seconds before restarting
+
+        save_stats(gave_up=True)
+        reset_game()
+        st.rerun()  # restarts the game after giving up
 
 with st.form("word_form"):
-    guess = st.text_input("Guess the word!", max_chars = lenght_word)   # creates limited input
-    submitted = st.form_submit_button("Submit")  
-
+    guess = st.text_input("Guess the word!", max_chars = lenght_word)
+    submitted = st.form_submit_button("Submit")
 
 st.info(st.session_state["my_message"])  # prints hint if available
+feedback_box = st.empty()  # creates an empty box for feedback
 
 if submitted:
     if st.session_state["word"] is None:
@@ -131,39 +147,44 @@ if submitted:
 
         if not clean_guess.isalpha() and clean_guess != "42":
             st.warning("Invalid input!")
-        st.write(f"You submitted: {clean_guess}")
-        # Run your calculation or other action here.
-        if clean_guess == st.session_state['word'] or clean_guess == "42":  # win if word or 42
-            st.success("Yeah! You did it")
-            st.balloons()
-            time.sleep(1.7)  # wait for 2 restarting
+        else: 
+            st.write(f"You submitted: {clean_guess}")
+            # Run your calculation or other action here.
+            if clean_guess == st.session_state['word'] or clean_guess == "42":  # win if word or 42
+                st.success("Yeah! You did it")
+                st.balloons()
+                time.sleep(1.7)  # wait for 2 restarting
 
-            st.session_state["guessing_stats"] = st.session_state["amount_of_guessing"]  
-            st.session_state["guessing_list"].append(st.session_state["guessing_stats"])  # obere beiden zeihlen zusammenfassen??
-            st.session_state["number_of_games"] += 1
-            st.session_state["number_list"].append(st.session_state["number_of_games"])  # for statistics
-            st.info(f"Your number of guesses {st.session_state["guessing_stats"]}")
-            st.session_state["is_played"] = True # statistics can now be seen
-            st.session_state["prompt_list"].append(st.session_state["prompt_count"])
+                st.session_state["guessing_stats"] = st.session_state["amount_of_guessing"]  
+                st.info(f"Your number of guesses {st.session_state["guessing_stats"]}")
 
-            reset_game() 
-            
-            st.rerun() #stars again after a win, so that the user can choose a new level
+                save_stats(gave_up=False)
+                reset_game() 
+                st.rerun() #stars again after a win, so that the user can choose a new level
 
-        else:
-            st.error("Oh no. The word is wrong.")  
-            st.session_state["amount_of_guessing"] += 1   # amount of guesses increases
-            word = st.session_state['word']  # safe word which is needed to guess
-            if st.session_state['amount_of_guessing']%3==0 and st.session_state['amount_of_guessing']//3 < len(word):   # after 3 guesses: hint
-                first_letters = ""
-                for letter in range (0,st.session_state['letter_index']+1,1):
-                    first_letters = first_letters + word[letter]
-                st.session_state["my_message"]  =  (f"The {st.session_state['letter_index'] + 1}. letter is: "
-                                    f"{word[st.session_state['letter_index']]} \n"
-                                    f"Here is the whole word {first_letters}")
-                st.session_state["letter_index"] += 1 
-            elif st.session_state['amount_of_guessing']//3  >= len(word):  # before whole word is printed, stop and lose
-                st.info(f"Debug info: The word is {st.session_state['word']}")
+            else:
+                feedback_box.error("Oh no. The word is wrong.")  
+                st.session_state["amount_of_guessing"] += 1   # amount of guesses increases
+                word = st.session_state['word']  # safe word which is needed to guess
+
+                if st.session_state['amount_of_guessing']%3==0 and st.session_state['amount_of_guessing']//3 < len(word):   # after 3 guesses: hint
+                    first_letters = ""
+                    for letter in range (0, st.session_state['letter_index'] + 1,1):
+                        first_letters = first_letters + word[letter]
+
+                    st.session_state["my_message"]  =  (f"The {st.session_state['letter_index'] + 1}. letter is: "
+                                        f"{word[st.session_state['letter_index']]} \n"
+                                        f"Here is the whole word {first_letters}")
+                    st.session_state["letter_index"] += 1 
+
+                elif st.session_state['amount_of_guessing']//3  >= len(word):  # before whole word is printed, stop and lose
+                    feedback_box.error(f"##### Game over! The word was: {word}")
+                    time.sleep(2) 
+
+                    save_stats(gave_up=True)
+                    reset_game()
+                    st.rerun()
+
 
 #    except (ValueError, NameError, TypeError):  # catches errors if an user submits a number or a special character
 #        st.info("You have to select your level first!")
