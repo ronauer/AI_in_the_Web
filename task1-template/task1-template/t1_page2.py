@@ -64,7 +64,7 @@ if st.session_state["is_played"]:
     )                 
 
     # statistics of number of hints per game
-    st.markdown("### Number of hints per game")
+    st.markdown("### Number of hints per game (AI)")
 
     # creating data
     hints_df = pd.DataFrame(
@@ -90,10 +90,13 @@ if st.session_state["is_played"]:
     points_df = pd.DataFrame(
         {
             "Points": [
-                max(
+                0
+                if st.session_state["gave_up_list"][i]
+                else max(
                     0,
                     200 - (
-                        10 * (st.session_state["guessing_list"][i] - 1) + 15 * st.session_state["prompt_list"][i]
+                        10 * (st.session_state["guessing_list"][i] - 1) 
+                        + 15 * st.session_state["prompt_list"][i]
                     ),
                 )   # calculation of points, must be positive
                 for i in range(st.session_state["number_of_games"])
