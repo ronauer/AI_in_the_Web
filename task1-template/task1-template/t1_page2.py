@@ -26,10 +26,11 @@ if st.session_state["is_played"] == True:
         y_label="Number of Guesses"
     )
 
-    st.markdown("#### Summary for number of guesses")
+    st.markdown("#### Average Guesses")
     # calculating statistics summary
     total_games = len(stats_df)
-    avg_guesses = stats_df["Number of Guesses"].mean()
+    avg_guesses = stats_df["Number of Guesses"].mean()  
+
 
     summary_df = pd.DataFrame({
         "Total Games": [total_games],
@@ -38,6 +39,18 @@ if st.session_state["is_played"] == True:
     # initializing chart without unnecesarry column
     st.dataframe(summary_df, hide_index=True)
 
+
+    st.markdown("#### Resignations")
+    gave_up = 0
+    win = 0
+    for i in range(len(st.session_state["gave_up_list"])):
+        if st.session_state["gave_up_list"][i] == True:
+            gave_up += 1
+        else:
+            win += 1
+
+    st.write(f"You have won {win} game(s) and resigned or lost {gave_up} time(s).")        
+                
 
     
     st.markdown("### Number of hints per game")

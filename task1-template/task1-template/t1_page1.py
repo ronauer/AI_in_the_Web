@@ -20,8 +20,8 @@ def reset_game():
 
 def save_stats(gave_up=False):
     st.session_state["guessing_list"].append(st.session_state["amount_of_guessing"])
-    st.session_state["gave_up_list"].append(gave_up)
-    st.session_state["number_of_games"] += 1
+    st.session_state["gave_up_list"].append(gave_up)  #gave up is True if user gave up or didn't guess correctly
+    st.session_state["number_of_games"] += 1 
     st.session_state["number_list"].append(st.session_state["number_of_games"])
     st.session_state["prompt_list"].append(st.session_state["prompt_count"])
     st.session_state["is_played"] = True
@@ -244,7 +244,10 @@ if prompt := st.chat_input("What is your question?"):
     else: 
         system_instruction = {
             "role" : "system",
-            "content" : "No secret word has been set yet."
+            "content" : ("This is a guessing game."
+                         "No secret word has been set yet." 
+                         "Please tell the user to select a level first above at the buttons before asking for hints, because only then the secret word is generated."
+                         "You are not allowed to generate a secret word yourself even if the user asks for it!")
         }
 
 
