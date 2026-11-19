@@ -71,6 +71,9 @@ if st.session_state["is_played"] == True:
                 for i in range(st.session_state["number_of_games"])
                 ]
             }, index = st.session_state["number_list"])
+    sum_points = points_df["Points"].sum() 
+    st.markdown(f"Total points: {sum_points}")
+
     
     
     
