@@ -7,7 +7,7 @@ from difflib import SequenceMatcher
 def normalize_text(text):
     return text.strip().lower() # removes whitespace and converts to lowercase
 
-# 
+# resets the game state to initial values
 def reset_game():
     st.session_state["is_clicked"] = False 
     st.session_state["word"] = None
@@ -17,6 +17,7 @@ def reset_game():
     st.session_state["prompt_count"] = 0
     st.session_state.messages = []
 
+# saves the statistics after a game ends
 def save_stats(gave_up=False):
     st.session_state["guessing_list"].append(st.session_state["amount_of_guessing"])
     st.session_state["gave_up_list"].append(gave_up)  # gave up is True if user gave up or didn't guess correctly
@@ -112,7 +113,7 @@ def hide_buttons():
         )
 
 
-lenght_word = None
+# lenght_word = None
 
 
 # chooses a random word from the level, saves word in session state, 
@@ -193,9 +194,6 @@ if submitted:
                     reset_game()
                     st.rerun()
 
-
-#    except (ValueError, NameError, TypeError):  # catches errors if an user submits a number or a special character
-#        st.info("You have to select your level first!")
 
 st.subheader("Ask AI for hints!")
 st.caption("You can simply ask AI for hints or yes/no questions. Each question will reduce 15 points.")
