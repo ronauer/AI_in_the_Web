@@ -10,3 +10,4 @@ Information concerning the stats:
   after submitting your guess or the give up button, you have to wait a second before changing to the stats page.
   So either wait for the ballons to dissapear or a second.
 
+The correct branch is the new-main-branch.
